@@ -1,18 +1,17 @@
 package io.github.h800572003.concurrent;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.Set;
-
+import io.github.chungtsai.cmd.TestCmdService;
+import io.github.chungtsai.cmd.TestCmdService.CmdRunnable;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.github.chungtsai.cmd.TestCmdService;
-import io.github.chungtsai.cmd.TestCmdService.CmdRunnable;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class SynchronizedSerialGetterTest {
@@ -42,7 +41,6 @@ class SynchronizedSerialGetterTest {
 //				.addCacheRepeat(new CmdRunnable("serialValueGetter", this::execute, 0, 0), 1000)//
 //				.startJoin();//
 //		assertThat(list.size()).isEqualTo(1000);
-//		assertThat(set.size()).isEqualTo(1000);
 //	}
 
 	public void execute() {

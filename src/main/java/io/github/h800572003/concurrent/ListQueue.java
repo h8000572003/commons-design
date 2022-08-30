@@ -5,33 +5,20 @@ import com.google.common.collect.Lists;
 import java.util.LinkedList;
 
 /**
- * 賭塞隊伍
+ * 一般Queue
  * @param <T>
  */
-public class BlockQueue<T> implements IQueue<T> {
-	private final int blockSize;// 最大比數
+public class ListQueue<T> implements IQueue<T> {
 	private final LinkedList<T> items = Lists.newLinkedList();
 
-	/**
-	 * 
-	 * @param blockSize
-	 *            堵塞筆數
-	 */
-	public BlockQueue(int blockSize) {
+
+	public ListQueue() {
 		super();
-		this.blockSize = blockSize;
 	}
 
 	@Override
 	public void add(T item) {
 		synchronized (this.items) {
-			while (this.items.size() > this.blockSize) {
-				try {
-					this.items.wait();
-				} catch (final InterruptedException e) {
-					break;
-				}
-			}
 			this.items.addLast(item);
 			this.items.notifyAll();
 		}
@@ -63,7 +50,6 @@ public class BlockQueue<T> implements IQueue<T> {
 
 	@Override
 	public void remove(T src) {
-		this.remove(src);
-
+		items.remove(src);
 	}
 }

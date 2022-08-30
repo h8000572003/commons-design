@@ -25,7 +25,7 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 
 	protected IWorkPool workPool;
 
-	public static <T> WorkLatchService<T> newService(String prefName, IQueue<T> queue, int workSize,
+	public static <T> WorkLatchService<T> newService(String prefName,  int workSize,
 			WorkExecutor<T> workListener, WorkAdpaterCallBackend<T> workAdpaterCallBackend) {
 		return new WorkLatchService<>(prefName, workSize, workListener, workAdpaterCallBackend);
 	}
@@ -54,12 +54,15 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 			throw new ApBusinessException("每次僅此執行一次");
 		}
 		this.countDownLatch = new CountDownLatch(items.size());//
+
+		this.workPool = this.createPool(queue);
+		this.workPool.start();
+
 		items.forEach(i -> {
 			queue.add(i);
 		});
-		this.workPool = this.createPool(queue);
 
-		this.workPool.start();
+
 		this.countDownLatch.await();
 		log.debug("item down done");
 	}
@@ -83,7 +86,7 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 
 	@Override
 	public void execute(List<? extends T> items) throws InterruptedException {
-		this.execute(new BlockQueue<T>(100), items);
+		this.execute(new BlockQueue<T>(5), items);
 	}
 
 }

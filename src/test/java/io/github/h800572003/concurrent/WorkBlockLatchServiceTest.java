@@ -1,18 +1,17 @@
 package io.github.h800572003.concurrent;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.github.h800572003.concurrent.WorkBlockLatchServiceTest.BlockItem;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import io.github.h800572003.concurrent.WorkBlockLatchServiceTest.BlockItem;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class WorkBlockLatchServiceTest implements WorkExecutor<BlockItem>, WorkAdpaterCallBackend<BlockItem> {
@@ -50,9 +49,9 @@ class WorkBlockLatchServiceTest implements WorkExecutor<BlockItem>, WorkAdpaterC
 
 	@Test
 	void testExecuteWhen2() {
-		IOrderKeyQueue<BlockItem> blockQueue = new OrderQueue<>();
+		IQueue<BlockItem> blockQueue = new ListQueue<>();
 
-		try (WorkLatchService<BlockItem> newService = WorkLatchService.newService("WORK_", blockQueue, 2, this, this)) {
+		try (WorkLatchService<BlockItem> newService = WorkLatchService.newService("WORK_", 2, this, this)) {
 			try {
 				List<BlockItem> collect = IntStream.range(0, 10).mapToObj(i -> new BlockItem(i))
 						.collect(Collectors.toList());

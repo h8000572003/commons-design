@@ -1,16 +1,15 @@
 package io.github.h800572003.concurrent;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.github.h800572003.concurrent.WorkLatchServiceSampleTest.Item;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import io.github.h800572003.concurrent.WorkLatchServiceSampleTest.Item;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class WorkLatchServiceSampleTest implements WorkExecutor<Item>, WorkAdpaterCallBackend<Item> {
@@ -47,8 +46,8 @@ public class WorkLatchServiceSampleTest implements WorkExecutor<Item>, WorkAdpat
 
 	@Test
 	void testExecuteWhen() {
-		BlockQueue<Item> blockQueue = new BlockQueue<Item>(1000);
-		try (WorkLatchService<Item> newService = WorkLatchService.newService("WORK", blockQueue, 2, this, this)) {
+//		BlockQueue<Item> blockQueue = new BlockQueue<Item>(1000);
+		try (WorkLatchService<Item> newService = WorkLatchService.newService("WORK",  2, this, this)) {
 			try {
 
 				List<Item> collect = IntStream.range(0, 10).mapToObj(i -> new Item(i)).collect(Collectors.toList());
