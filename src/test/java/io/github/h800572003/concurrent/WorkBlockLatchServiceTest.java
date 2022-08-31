@@ -49,7 +49,7 @@ class WorkBlockLatchServiceTest implements WorkExecutor<BlockItem>, WorkAdpaterC
 
     @Test
     void testExecuteWhen2() {
-        BlockQueue<BlockItem>blockQueue=new BlockQueue<>(5);
+        ListQueue<BlockItem>blockQueue=new ListQueue<>();
         try (WorkLatchService<BlockItem> newService = WorkLatchService.newService(//
                 "WORK_", blockQueue, 10, this, this)) {
             try {
