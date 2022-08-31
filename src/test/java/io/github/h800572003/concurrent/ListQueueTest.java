@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class ListQueueTest extends BaseQueueTest {
 
     @BeforeEach
-    void init(){
+    void init() throws InterruptedException {
         this.setUp(5,new ListQueue<>());
     }
 

@@ -18,18 +18,19 @@ public class BaseQueueTest {
     protected  int size;
 
 
-    void setUp(int size,IQueue<String> queues) {
+    void setUp(int size,IQueue<String> queues) throws InterruptedException {
         this.size=size;
         this.queues = queues;
-        IntStream.range(0,
+        Thread thread = new Thread(() -> IntStream.range(0,
                         size).mapToObj(i -> String.format("%d", i))
-                .forEach(queues::add);
+                .forEach(queues::add));
+        thread.start();
 
 
     }
     void assertValue(int expected) throws InterruptedException {
 
-        this.countDownLatch=new CountDownLatch(queues.size());
+        this.countDownLatch=new CountDownLatch(size);
 
         new AtomicThread("work1", this.queues,countDownLatch,integer).start();
         new AtomicThread("work2", this.queues,countDownLatch,integer).start();
@@ -65,7 +66,9 @@ public class BaseQueueTest {
                 String take = null;
                 try {
                     take = queues.take();
-                    this.integer.addAndGet(Integer.parseInt(take));
+                    int i = this.integer.addAndGet(Integer.parseInt(take));
+                    log.info("add value:{}",i);
+
                     this. countDownLatch.countDown();
                 } catch (InterruptedException e) {
                     log.info("error",e);

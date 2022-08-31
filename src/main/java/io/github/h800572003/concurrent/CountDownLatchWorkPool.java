@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 public class CountDownLatchWorkPool<T> implements IWorkPool {
 
 	private List<Work> works = null;
-	private final CountDownLatch countDownLatch;
+	private final ICountDownLock countDownLatch;
 	private final CountDownLatch workDownLatch;
 	private final IQueue<T> queue;
 	private final WorkExecutor<T> workExecutor;
@@ -33,7 +33,7 @@ public class CountDownLatchWorkPool<T> implements IWorkPool {
 	public CountDownLatchWorkPool(String name, //
 			int workSize, //
 			WorkExecutor<T> workExecutor, //
-			CountDownLatch countDownLatch, //
+			ICountDownLock countDownLatch, //
 			IQueue<T> queue, //
 			WorkAdpaterCallBackend<T> workAdpaterCallBackend) {//
 		super();

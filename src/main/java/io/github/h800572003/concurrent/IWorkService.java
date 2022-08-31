@@ -21,13 +21,8 @@ public interface IWorkService<T> {
 	 * 
 	 * @throws InterruptedException
 	 */
-	void execute(IQueue<T> queue, List<? extends T> items) throws InterruptedException;
+	void execute( List<? extends T> items) throws InterruptedException;
 
-	/**
-	 * 啟動
-	 * 
-	 * @throws InterruptedException
-	 */
-	void execute(List<? extends T> items) throws InterruptedException;
+
 
 }

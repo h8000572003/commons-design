@@ -1,11 +1,9 @@
 package io.github.h800572003.concurrent;
 
-import io.github.h800572003.exception.ApBusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Closeable;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 門閂工人服務
@@ -17,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 
-	private CountDownLatch countDownLatch;
+	private ICountDownLock countDownLatch;
 	protected final WorkExecutor<T> workExecutor;
 	protected final WorkAdpaterCallBackend<T> workAdpaterCallBackend;
 	protected final String prefName;// 執行序名稱
@@ -25,17 +23,23 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 
 	protected IWorkPool workPool;
 
-	public static <T> WorkLatchService<T> newService(String prefName,  int workSize,
+	IQueue<T> queue;
+
+	public static <T> WorkLatchService<T> newService(String prefName,	IQueue<T> queue,  int workSize,
 			WorkExecutor<T> workListener, WorkAdpaterCallBackend<T> workAdpaterCallBackend) {
-		return new WorkLatchService<>(prefName, workSize, workListener, workAdpaterCallBackend);
+		return new WorkLatchService<>(prefName,queue, workSize, workListener, workAdpaterCallBackend);
 	}
 
-	protected WorkLatchService(String prefName, int workSize, WorkExecutor<T> workListener,
+	protected WorkLatchService(String prefName,IQueue<T> queue, int workSize, WorkExecutor<T> workListener,
 			WorkAdpaterCallBackend<T> workAdpaterCallBackend) {
 		this.prefName = prefName;
 		this.workExecutor = workListener;
 		this.workAdpaterCallBackend = workAdpaterCallBackend;
 		this.workSize = workSize;
+		this.queue=queue;
+		this.countDownLatch=new CountDownLock(1);
+
+
 	}
 
 	@Override
@@ -48,23 +52,17 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 	 * 堵住，執行清單完成，才繼續
 	 */
 	@Override
-	public void execute(IQueue<T> queue, List<? extends T> items) throws InterruptedException {
+	public void execute( List<? extends T> items) throws InterruptedException {
 
-		if (countDownLatch != null) {
-			throw new ApBusinessException("每次僅此執行一次");
-		}
-		this.countDownLatch = new CountDownLatch(items.size());//
+		new Thread(() -> items.forEach(queue::add)).start();//加入
 
+		this.countDownLatch.setSize(items.size());
 		this.workPool = this.createPool(queue);
 		this.workPool.start();
 
-		items.forEach(i -> {
-			queue.add(i);
-		});
-
-
 		this.countDownLatch.await();
 		log.debug("item down done");
+
 	}
 
 	/**
@@ -84,9 +82,5 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
 		return workPool;
 	}
 
-	@Override
-	public void execute(List<? extends T> items) throws InterruptedException {
-		this.execute(new BlockQueue<T>(5), items);
-	}
 
 }
