@@ -13,17 +13,25 @@
 
 
 ### WorkLatchService 多工服務
+可依自身需求進行，組合不同的Queue，IWorkPool工人池
 
+整合以下元件
 
 ### IQUEUE 任務隊伍
 
-- IOrderKeyQueue(同樣key資料將不會同時執行)
-- BlockQueue(堵塞池)，工作項目達到限制範圍內，停止加入項目
-- ListQueue(清單池)：順序Ｑueue
+### IOrderKeyQueue(同樣key資料將不會同時執行)
+> 照順序執行且任務清單有資料狀態依賴，不得重複同時執行之需，可使用該任務池
+
+### BlockQueue(堵塞池)，工作項目達到限制範圍內，停止加入項目
+> 有賭塞機制避免，讓生產池維持特定範圍內，需進行消耗才能繼續放置
+
+
+### ListQueue(清單池)
+> 最簡單的任務池,依照順序執行，工作任務資料無衝突
 
 ### IWorkPool 工人池
+建立可重複使用工人回收池，建立特定介面 
 
 ### CountDownLatchWorkPool
-用途：一次
-
-- AlwAysAliveWorkPool(無限工作，持續收到工作，直接到關閉服務，才清除工人池)
+用途：工人池可使用接收任務，進行任務執行，所有工作尚未完成前，
+將進行Block直到完成任務或中斷作業＝工人皆回收才能繼續操作

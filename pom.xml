@@ -206,7 +206,7 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>git@github.com:h8000572003/commons-design.git</url>
+		<url>git@github.com:h8000572003/design.git</url>
 	</scm>
 	<distributionManagement>
 		<snapshotRepository>
