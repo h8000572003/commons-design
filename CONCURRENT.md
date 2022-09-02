@@ -23,5 +23,7 @@
 
 ### IWorkPool 工人池
 
-- CountDownLatchWorkPool(有限工作，手上代辦任務一次取得)
+### CountDownLatchWorkPool
+用途：一次
+
 - AlwAysAliveWorkPool(無限工作，持續收到工作，直接到關閉服務，才清除工人池)

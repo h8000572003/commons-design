@@ -27,17 +27,17 @@ public class BlockQueue<T> implements IQueue<T> {
     @Override
     public void add(T item) {
         synchronized (this.items) {
-            log.debug("item size:{}", this.items.size());
+            log.trace("item size:{}", this.items.size());
             try {
                 while (this.items.size() >= this.blockSize) {
-                    log.debug("add wait");
+                    log.trace("add wait");
                     this.items.wait();
                 }
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new ApBusinessException("中斷", e);
             }
-            log.debug("add {}", item);
+            log.trace("add {}", item);
             this.items.addLast(item);
             this.items.notifyAll();
         }
@@ -45,14 +45,14 @@ public class BlockQueue<T> implements IQueue<T> {
 
     @Override
     public T take() throws InterruptedException {
-        log.debug("want take");
+        log.trace("want take");
         synchronized (this.items) {
             while (this.items.isEmpty()) {
-                log.debug("take wait");
+                log.trace("take wait");
                 this.items.wait();
             }
             T t = this.items.removeFirst();
-            log.debug("takse:{} size:{}", t, this.items.size());
+            log.trace("takse:{} size:{}", t, this.items.size());
             items.notifyAll();
             return t;
         }
