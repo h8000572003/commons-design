@@ -37,7 +37,8 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
         this.workSize = workSize;
         this.queue = queue;
         this.countDownLatch = new CountDownLock(1);
-
+        this.workPool = this.createPool(queue);
+        this.workPool.start();
 
     }
 
@@ -56,8 +57,7 @@ public class WorkLatchService<T> implements Closeable, IWorkService<T> {
         new Thread(() -> items.forEach(queue::add)).start();//加入
 
         this.countDownLatch.setSize(items.size());
-        this.workPool = this.createPool(queue);
-        this.workPool.start();
+
         try {
             this.countDownLatch.await();
         } catch (InterruptedException e) {

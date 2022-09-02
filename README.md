@@ -4,5 +4,5 @@
 
 ### 目前提供功能
 
-- [CONCURRENT](CONCURRENT) 平行模型
-- [STATE](STATE) 狀態機
+- [CONCURRENT](CONCURRENT.md) 平行模型
+- [STATE](STATE.md) 狀態機
